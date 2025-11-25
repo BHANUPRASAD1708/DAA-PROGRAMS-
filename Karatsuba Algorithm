@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <math.h>
+
+int getLength(long long value) {
+    int counter = 0;
+    while (value != 0) { counter++; value /= 10; }
+    return counter;
+}
+
+long long karatsuba(long long x, long long y) {
+    if (x < 10 || y < 10) return x * y;
+
+    int n = fmax(getLength(x), getLength(y));
+    int half = n / 2;
+    long long multiplier = pow(10, half);
+
+    long long a = x / multiplier;
+    long long b = x % multiplier;
+    long long c = y / multiplier;
+    long long d = y % multiplier;
+
+    long long ac = karatsuba(a, c);
+    long long bd = karatsuba(b, d);
+    long long ad_plus_bc = karatsuba(a + b, c + d) - ac - bd;
+
+    return (ac * (long long)pow(10, 2 * half)) + (ad_plus_bc * multiplier) + bd;
+}
+
+int main() {
+    printf("Karatsuba Result: %lld\n", karatsuba(1234, 5678));
+    return 0;
+}
